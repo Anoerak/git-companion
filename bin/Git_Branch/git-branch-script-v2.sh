@@ -1,9 +1,18 @@
 #!/bin/bash
 
 # chmod +x git-branch-script.sh
+# chmod -x git-branch-script.sh
 # ./git-branch-script.sh
 
+# --------------------------------------------------
+	# Handle the branch creation process (V2)
+	# by: Anørak
+	# version: 1.0
+	# updated: 2024-06-24
+# --------------------------------------------------
+
 # ANSI color codes
+# --------------------------------------------------
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -13,12 +22,17 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Flags
+# --------------------------------------------------
 BRANCH_OPTIONS=false
 NO_USER_FLAG=false
 MODIFY_DEFAULT_USER=false
 MODIFY_USER_FLAG=false
 GIT_BRANCH_CONFIG_FLAG=false
 GITIGNORE_FLAG=false
+
+# Variables
+# --------------------------------------------------
+ALIAS="gbranch2"
 
 # Function to prompt for input
 prompt() {

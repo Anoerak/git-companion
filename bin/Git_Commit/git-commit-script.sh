@@ -1,0 +1,196 @@
+#!/bin/bash
+
+# chmod +x git-commit-script.sh
+# chmod -x git-commit-script.sh
+# ./git-commit-script.sh
+
+# --------------------------------------------------
+	# Handle the commit process
+	# by: Anørak
+	# version: 1.0
+	# updated: 2024-06-24
+# --------------------------------------------------
+
+# ANSI color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+GREEN2='\x1b[32m' # Custom code for green
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+WHITE_ON_RED='\x1b[41m'
+WHITE_ON_GREEN='\x1b[42m'
+ORANGE='\033[38;5;214m' # Custom code for orange
+NC='\033[0m'            # No Color
+
+# Variables
+# --------------------------------------------------
+ALIAS="gcommit"
+
+# Function to prompt for input
+prompt() {
+	local var_name=$1
+	local prompt_message=$2
+	local default_value=$3
+	read -p "$(echo -e "${YELLOW}$prompt_message ($default_value):${NC} ")" input
+	eval $var_name='"${input:-$default_value}"'
+}
+
+# Function to select module
+select_module() {
+	echo -e "${BLUE}Select commit type:${NC}"
+	echo -e "1)${GREEN} feat:${NC} A new feature"
+	echo -e "2)${GREEN} fix:${NC} A bug fix"
+	echo -e "3)${GREEN} docs:${NC} Documentation only changes"
+	echo -e "4)${GREEN} style:${NC} Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"
+	echo -e "5)${GREEN} refactor:${NC} A code change that neither fixes a bug nor adds a feature"
+	echo -e "6)${GREEN} perf:${NC} A code change that improves performance"
+	echo -e "7)${GREEN} test:${NC} Adding missing tests or correcting existing tests"
+	echo -e "8)${GREEN} build:${NC} Changes that affect the build system or external dependencies"
+	echo -e "9)${GREEN} ci:${NC} Changes to our CI configuration files and scripts"
+	echo -e "10)${GREEN} chore:${NC} Other changes that don't modify src or test files"
+	echo -e "11)${GREEN} revert:${NC} Reverts a previous commit"
+	echo -e "12) ${RED}SECURITY${NC}: ${ORANGE}Fixing security issues${NC}"
+	echo -e "13) ${RED}BREAKING CHANGE${NC}: ${ORANGE}A breaking change${NC}"
+	echo -e "14)${CYAN} custom:${NC} Custom commit type"
+	read -p "$(echo -e "${YELLOW}Enter the number corresponding to the commit type:${NC} ")" module_choice
+
+	case $module_choice in
+	1) MODULE="feat" ;;
+	2) MODULE="fix" ;;
+	3) MODULE="docs" ;;
+	4) MODULE="style" ;;
+	5) MODULE="refactor" ;;
+	6) MODULE="perf" ;;
+	7) MODULE="test" ;;
+	8) MODULE="build" ;;
+	9) MODULE="ci" ;;
+	10) MODULE="chore" ;;
+	11) MODULE="revert" ;;
+	12) MODULE="SECURITY" ;;
+	13) MODULE="BREAKING CHANGE" ;;
+	14)
+		read -p "$(echo -e "${YELLOW}Enter the custom commit type:${NC} ")" custom_module
+		MODULE="[$custom_module]"
+		;;
+	*)
+		echo -e "${WHITE_ON_RED}Invalid choice${NC}"
+		# Let's start over
+		select_module
+		;;
+	esac
+}
+
+# Function to select scope
+select_scope() {
+	read -p "$(echo -e "${YELLOW}Enter the scope of the change (e.g., component, module):${NC} ")" SCOPE
+	if [[ -n "$SCOPE" ]]; then
+		SCOPE="($SCOPE)"
+	fi
+}
+
+# Function to stage files
+stage_files() {
+	echo -e "${BLUE}Unstaged files:${NC}"
+	git status --porcelain | grep -E '^[AMDR]|^ [MD]|^\?\?' | nl
+	read -p "$(echo -e "${YELLOW}Enter the numbers of the files to stage, separated by spaces (or 'all' to stage all):${NC} ")" file_choices
+
+	if [ -n "$(git diff --cached --name-only)" ]; then
+		read -p "$(echo -e "${YELLOW}You already have staged files. Do you want to unstage them? (y/n):${NC} ")" unstage_choice
+		if [[ "$unstage_choice" =~ ^[Yy]$ ]]; then
+			git reset
+		fi
+	fi
+
+	if [[ "$file_choices" =~ ^[Aa][Ll][Ll]$ ]]; then
+		git add .
+	else
+		for choice in $file_choices; do
+			file=$(git status --porcelain | grep -E '^[AMDR]|^ [MD]|^\?\?' | sed -n "${choice}p" | awk '{print $2}')
+			git add "$file"
+		done
+	fi
+}
+
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+
+DEFAULT_ISSUE_ID=""
+DEFAULT_DESCRIPTION=""
+
+select_module
+
+# If the branch name contains a scope, use it as the default scope
+# and ask for confirmation
+if [[ $BRANCH_NAME == *"/"* ]]; then
+	DEFAULT_SCOPE=$(echo $BRANCH_NAME | cut -d'/' -f2)
+	read -p "$(echo -e "${YELLOW}Use '$DEFAULT_SCOPE' as the default scope? (y/n):${NC} ")" scope_choice
+	if [[ "$scope_choice" =~ ^[Yy]$ ]]; then
+		SCOPE="($DEFAULT_SCOPE)"
+	fi
+fi
+
+# If the module is security, we prompt for more information
+if [ "$MODULE" == "SECURITY" ]; then
+	read -p "$(echo -e "${YELLOW}Enter the package manager (e.g., NODE, COMPOSER):${NC} ")" PACKAGE_MANAGER
+	read -p "$(echo -e "${YELLOW}Enter the package name:${NC} ")" PACKAGE_NAME
+	read -p "$(echo -e "${YELLOW}Enter the CVE or other reference:${NC} ")" REFERENCE
+	read -p "$(echo -e "${YELLOW}Enter the classification/description/notes:${NC} ")" CLASSIFICATION
+	prompt "ISSUE_ID" "Enter the reference ticket" "$DEFAULT_ISSUE_ID"
+
+	# Ensure the description ends with a period
+	if [[ "$CLASSIFICATION" != *"." ]]; then
+		CLASSIFICATION="$CLASSIFICATION"
+	fi
+
+	COMMIT_MSG="$MODULE ($PACKAGE_MANAGER): $PACKAGE_NAME - $REFERENCE ($CLASSIFICATION). Ref $ISSUE_ID"
+else
+	if [ "$MODULE" == "BREAKING CHANGE" ]; then
+		select_scope
+
+		prompt "DESCRIPTION" "Enter the BREAKING CHANGE description" "$DEFAULT_DESCRIPTION"
+		prompt "ISSUE_ID" "Enter the issue reference (or leave blank to skip)" "$DEFAULT_ISSUE_ID"
+
+		if [[ "$DESCRIPTION" != *"." ]]; then
+			DESCRIPTION="$DESCRIPTION."
+		fi
+
+		if [ -z "$ISSUE_ID" ]; then
+			COMMIT_MSG="$MODULE$SCOPE: $DESCRIPTION"
+		else
+			COMMIT_MSG="$MODULE$SCOPE: $DESCRIPTION (Issue #$ISSUE_ID)"
+		fi
+
+	else
+		select_scope
+
+		prompt "DESCRIPTION" "Enter the commit description" "$DEFAULT_DESCRIPTION"
+		prompt "ISSUE_ID" "Enter the issue reference (or leave blank to skip)" "$DEFAULT_ISSUE_ID"
+
+		if [[ "$DESCRIPTION" != *"." ]]; then
+			DESCRIPTION="$DESCRIPTION."
+		fi
+
+		if [ -z "$ISSUE_ID" ]; then
+			COMMIT_MSG="$MODULE$SCOPE: $DESCRIPTION"
+		else
+			COMMIT_MSG="$MODULE$SCOPE: $DESCRIPTION (Issue #$ISSUE_ID)"
+		fi
+	fi
+fi
+
+read -p "$(echo -e "${YELLOW}Do you want to stage changes? (y/n):${NC} ")" stage_choice
+if [[ "$stage_choice" =~ ^[Yy]$ ]]; then
+	stage_files
+fi
+
+echo -e "${BLUE}Do you want to commit with the following message:${NC} ${GREEN2}$COMMIT_MSG${NC} ${BLUE}?${NC}"
+echo -e "${BLUE}Staged files:${NC}"
+git diff --cached --name-only
+
+read -p "$(echo -e "${YELLOW}Confirm (y/n):${NC} ")" confirm_choice
+if [[ "$confirm_choice" =~ ^[Yy]$ ]]; then
+	git commit -m "$COMMIT_MSG"
+	echo -e "${WHITE_ON_GREEN}Committed with message${NC}: $COMMIT_MSG$"
+else
+	echo -e "${WHITE_ON_RED}Commit aborted.${NC}"
+fi
