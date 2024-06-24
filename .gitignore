@@ -69,7 +69,6 @@ Thumbs.db
 
 # Node.js specific
 # ==================================================
-
 # Dependencies
 node_modules/
 npm-debug.log*
@@ -97,7 +96,6 @@ typings/
 
 # Python specific
 # ==================================================
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -207,4 +205,3 @@ venv.bak/
 
 # Windows system files
 Thumbs.db
-.git-branch-config
