@@ -129,3 +129,9 @@ function_choose_git_command() {
     echo "Executing: $final_command"
     eval $final_command
 }
+
+init() {
+    function_choose_git_command
+}
+
+init

@@ -12,6 +12,7 @@
 # --------------------------------------------------
 
 ALIAS="gmenu"
+PWD=$(pwd)
 
 # Define the ASCII logo
 LOGO=$(cat <<'EOF'
@@ -64,14 +65,21 @@ function_access_menu() {
 	# Prompt for user input
 	read -p "Enter the number corresponding to the option: " choice
 
-	# Case statement to handle user input
+	# Case statement to handle user input. We launch the corresponding script based on the user's choice 
 	case $choice in
-	1) echo "You chose option 1" ;;
-	2) echo "You chose option 2" ;;
-	3) echo "You chose option 3" ;;
-	4) echo "You chose option 4" ;;
-	5) echo "You chose option 5" ;;
-	6) echo "You chose option 6" ;;
-	7) echo "You chose option 7" ;;
+		1) bash $PWD/bin/Git_User/git-user.sh ;;
+		2) bash $PWD/bin/Git_Init/git-init.sh ;;
+		3) bash $PWD/bin/Git_Branch/git-branch.sh ;;
+		4) bash $PWD/bin/Git_Commit/git-commit.sh ;;
+		5) bash $PWD/bin/Git_Log/git-log.sh ;;
+		6) bash $PWD/bin/Git_Config/git-config.sh ;;
+		7) bash $PWD/bin/Git_Help/git-help.sh ;;
+		*) echo "Invalid choice" ;;
 	esac
 }	
+
+init() {
+	function_access_menu
+}
+
+init
