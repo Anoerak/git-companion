@@ -68,12 +68,13 @@ function_loop_folders() {
 }
 
 init() {
-	source bin/Git_Menu/git-menu-script.sh
+	source libs/imgs/imgs-ascii.sh
 	function_print_header
 	source libs/define-profile.sh
 	init install
 	function_loop_folders bin
 	source $PROFILE
+	function_print_footer
 }
 
 init

@@ -14,43 +14,9 @@
 ALIAS="gmenu"
 PWD=$(pwd)
 
-# Define the ASCII logo
-LOGO=$(cat <<'EOF'
-#   _______ _       _______                              _             
-#  (_______|_)  _  (_______)                            (_)            
-#   _   ___ _ _| |_ _       ___  ____  ____  _____ ____  _  ___  ____  
-#  | | (_  | (_   _) |     / _ \|    \|  _ \(____ |  _ \| |/ _ \|  _ \ 
-#  | |___) | | | |_| |____| |_| | | | | |_| / ___ | | | | | |_| | | | |
-#   \_____/|_|  \__)\______)___/|_|_|_|  __/\_____|_| |_|_|\___/|_| |_|
-#                                     |_|                              
-EOF
-)
-
-# Function the print the header
-function_print_header() {
-	echo "******************************************"
-	echo "*                                        *"
-	echo "*      Welcome to GitCompanion!          *"
-	echo "*   Your friendly assistant for GIT.     *"
-	echo "*                                        *"
-	echo "******************************************"
-	echo ""
-	echo "$LOGO"
-	echo ""
-}
-
-
 # Function to access the main menu
 function_access_menu() {
-	# Welcome message
-	echo "******************************************"
-	echo "*                                        *"
-	echo "*      Welcome to GitCompanion!          *"
-	echo "*   Your friendly assistant for GIT.     *"
-	echo "*                                        *"
-	echo "******************************************"
-	echo ""
-	echo "$LOGO"
+	bash $PWD/libs/imgs/imgs-ascii.sh function_print_header
 	echo ""
 	echo "Get started by choosing an option below:"
 	echo ""
@@ -76,7 +42,7 @@ function_access_menu() {
 		7) bash $PWD/bin/Git_Help/git-help-script.sh ;;
 		*) echo "Invalid choice" ;;
 	esac
-}	
+}
 
 init() {
 	function_access_menu
