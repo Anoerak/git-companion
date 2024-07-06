@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# chmod +x git-help.sh
-# chmod -x git-help.sh
-# ./gitignore.sh
+# chmod +x git-help-script.sh
+# chmod -x git-help-script.sh
+# ./git-gelp-script.sh
 
 
 # --------------------------------------------------

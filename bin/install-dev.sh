@@ -68,7 +68,7 @@ function_loop_folders() {
 }
 
 init() {
-	source bin/Git_Menu/git-menu.sh
+	source bin/Git_Menu/git-menu-script.sh
 	function_print_header
 	source libs/define-profile.sh
 	init install
