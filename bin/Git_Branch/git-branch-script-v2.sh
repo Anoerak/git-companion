@@ -126,7 +126,7 @@ create_git_branch_config() {
 
     echo -e "${BLUE}Creating .gitignore file...${NC}"
 
-    if ! ./gitignore.sh; then
+    if ! ./git-gitignore-script.sh; then
         echo -e "${RED}Permission denied.${NC}"
         prompt_message="${YELLOW}Authorize script to create .gitignore file? (y/n): ${NC}"
         read -p "$(echo -e "$prompt_message")" authorize
@@ -137,10 +137,10 @@ create_git_branch_config() {
             return
         fi
 
-        chmod +x gitignore.sh
+        chmod +x git-gitignore-script.sh
     fi
 
-    ./gitignore.sh
+    ./git-gitignore-script.sh
     echo -e "${GREEN}.gitignore file created successfully.${NC}"
     GITIGNORE_FLAG=true
     echo ".git-branch-config" >>.gitignore

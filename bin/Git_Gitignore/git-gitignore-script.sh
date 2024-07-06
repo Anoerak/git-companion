@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# chmod +x gitignore.sh
-# chmod -x gitignore.sh
-# ./gitignore.sh
+# chmod +x git-gitignore-script.sh
+# chmod -x git-gitignore-script.sh
+# ./git-gitignore-script.sh
 
 
 # --------------------------------------------------
@@ -21,7 +21,7 @@ gitignore_content=(
     "# .gitignore template from Git Companion."
     "# by: Anørak"
     "# version: 1.0"
-    "# updated: 2024-06-24"
+    "# updated: 2024-07-06"
     "# --------------------------------------------------"
     "# .gitignore"
     ""
