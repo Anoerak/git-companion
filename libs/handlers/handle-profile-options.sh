@@ -19,7 +19,6 @@ remove_aliases() {
 	echo "Aliases successfully removed from $PROFILE"
 	if [ "$INSTALL_FLAG" == "install" ]; then
 		function_loop_folders bin
-		source $PROFILE
 	else
 		echo "Thank you for using the Git Companion"
 		exit 0
@@ -40,7 +39,6 @@ handle_profile_options() {
 		if [ "$ADD_ALIASES" == "y" ]; then
 			# We pass to the next step
 			function_loop_folders bin
-			source $PROFILE
 		elif [ "$ADD_ALIASES" == "n" ]; then
 			echo "Aliases will not be added to $PROFILE"
 			exit 0
