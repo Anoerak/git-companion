@@ -53,7 +53,6 @@ check_profile_for_alias() {
 		# what do we do?
 		if [ "$ORGIGIN_REQUEST" == "install" ]; then
 			function_loop_folders bin
-			source $PROFILE
 		else
 			echo "There are no Git Companion aliases in $PROFILE"
 			exit 0

@@ -11,22 +11,20 @@ check_environment() {
 	local command=$1
 
 	if [ "$ENV" == "DEV" ]; then
+		source ./libs/check/check-permissions.sh
 		if [ "$command" == "install" ]; then
-			source ./libs/check/check-permissions.sh
 			check_permissions bin/install-dev.sh
 		elif [ "$command" == "uninstall" ]; then
-			source ./libs/check/check-permissions.sh
 			check_permissions bin/uninstall-dev.sh
 		else
 			echo "Unknown command"
 			exit 1
 		fi
 	elif [ "$ENV" == "PROD" ]; then
+		source ./libs/check/check-permissions.sh
 		if [ "$command" == "install" ]; then
-			source ./libs/check/check-permissions.sh
 			check_permissions bin/install-prod.sh
 		elif [ "$command" == "uninstall" ]; then
-			source ./libs/check/check-permissions.sh
 			check_permissions bin/uninstall-prod.sh
 		else
 			echo "Unknown command"
