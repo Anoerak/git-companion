@@ -12,11 +12,14 @@
 # --------------------------------------------------
 
 ALIAS="gmenu"
-PWD=$(pwd)
+ESCAPE_PATH=$(echo $(pwd) | sed 's/[^a-zA-Z0-9\/_-]/\\&/g')
+
 
 # Function to access the main menu
 function_access_menu() {
-	bash $PWD/libs/imgs/imgs-ascii.sh function_print_header
+	# We print the header of the main menu
+	echo "Welcome to Git Companion!"
+	bash $ESCAPE_PATH/bin/Git_Help/git-help-script.sh
 	echo ""
 	echo "Get started by choosing an option below:"
 	echo ""
@@ -33,14 +36,14 @@ function_access_menu() {
 
 	# Case statement to handle user input. We launch the corresponding script based on the user's choice 
 	case $choice in
-		1) bash $PWD/bin/Git_User/git-user-script.sh ;;
-		2) bash $PWD/bin/Git_Init/git-init-script.sh ;;
-		3) bash $PWD/bin/Git_Branch/git-branch-script.sh ;;
-		4) bash $PWD/bin/Git_Commit/git-commit-script.sh ;;
-		5) bash $PWD/bin/Git_Log/git-log-script.sh ;;
-		6) bash $PWD/bin/Git_Config/git-config-script.sh ;;
-		7) bash $PWD/bin/Git_Help/git-help-script.sh ;;
-		*) echo "Invalid choice" ;;
+		1) bash guser ;;
+		2) bash $ESCAPE_PATH/bin/Git_Init/git-init-script.sh ;;
+		3) bash $ESCAPE_PATH/bin/Git_Branch/git-branch-script.sh ;;
+		4) bash $ESCAPE_PATH/bin/Git_Commit/git-commit-script.sh ;;
+		5) bash $ESCAPE_PATH/bin/Git_Log/git-log-script.sh ;;
+		6) bash $ESCAPE_PATH/bin/Git_Config/git-config-script.sh ;;
+		7) bash $ESCAPE_PATH/bin/Git_Help/git-help-script.sh ;;
+		*) echo "Invalid option. Please try again." ;;
 	esac
 }
 
