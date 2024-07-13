@@ -18,6 +18,22 @@ function_init_repo() {
 	echo "Initializing a new repository..."
 	git init
 	echo "Repository initialized successfully."
+	read -p "Do you want to add a remote repository? (y/n): " choice
+	if [ "$choice" = "y" ]; then
+		read -p "Enter the remote repository URL: " url
+		git remote add origin "$url"
+		echo "Remote repository added successfully."
+		read -p "Do you want to rename the main branch? (y/n): " choice
+		if [ "$choice" = "y" ]; then
+			read -p "Enter the new branch name: " branch
+			git checkout -b "$branch"
+			echo "Main branch renamed successfully."
+		else
+			echo "No branch renamed."
+		fi
+	else
+		echo "No remote repository added."
+	fi
 }
 
 # Function to get the repository informations
