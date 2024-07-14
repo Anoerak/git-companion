@@ -9,6 +9,9 @@
 # updated: 2024-07-08
 # --------------------------------------------------
 
+# Load environment variables
+source libs/color-codes.sh
+
 PWD=$(pwd | sed 's/[^a-zA-Z0-9\/_-]/\\&/g')
 OS=$(uname -s)
 SHELL=$(echo $SHELL | awk -F '/' '{print $NF}')
@@ -41,11 +44,11 @@ function_remove_aliases() {
 }
 
 init() {
-    echo "Uninstalling Git Companion..."
+    echo -e "${YELLOW}Uninstalling Git Companion...${NC}"
 
     function_remove_aliases
 
-    echo "Git Companion uninstallation complete."
+    echo "${GREEN}Git Companion uninstallation complete.${NC}"
     source "$PROFILE"
 }
 

@@ -7,29 +7,32 @@
 	# updated: 2024-06-24
 # --------------------------------------------------
 
+# ANSI color codes
+source libs/color-codes.sh
+
 check_permissions() {
 	local script=$1
 	
 	if [ ! -x $script ]; then
-		echo "The script $script is not authorized to run."
-		echo "Do you want to change the permissions?"
-		read -t 30 -p "Enter 'yes' or 'no': " answer
+		echo -e "${ORANGE}The script ${NC}${BLUE}$script ${NC}${ORANGE}is not authorized to run.${NC}"
+		echo -e "${YELLOW}Do you want to change the permissions?${NC}"
+		read -t 30 -p "${YELLOW}Enter 'yes' or 'no': ${NC}" answer
 		if [ "$answer" == "yes" ]; then
 			chmod +x $script
-			echo "The permissions have been changed."
-			read -t 30 -p "Do you want to run the script now? Enter 'yes' or 'no': " answer
+			echo -e "${GREEN}The permissions have been changed.${NC}"
+			read -t 30 -p "${YELLOW}Do you want to run the script now? Enter 'yes' or 'no': ${NC}" answer
 			if [ "$answer" == "yes" ]; then
 				./$script
 			else
-				echo "The script has not been run."
+				echo -e "${ORANGE}The script has not been run.${NC}"
 				exit 1
 			fi
 		else
-			echo "The permissions have not been changed."
+			echo "${ORANGE}The permissions have not been changed.${NC}"
 			exit 1
 		fi
 	else 
-		echo "Executing the script $script."
+		echo "${GREEN}Executing the script ${NC}${BLUE}$script.${NC}"
 		./$script
 	fi
 }
