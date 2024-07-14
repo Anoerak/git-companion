@@ -7,6 +7,9 @@
 	# updated: 2024-06-24
 # --------------------------------------------------
 
+# ANSI color codes
+source libs/color-codes.sh
+
 check_environment() {
 	local command=$1
 
@@ -17,7 +20,7 @@ check_environment() {
 		elif [ "$command" == "uninstall" ]; then
 			check_permissions bin/uninstall-dev.sh
 		else
-			echo "Unknown command"
+			echo -e "${ORANGE}Unknown command${NC}"
 			exit 1
 		fi
 	elif [ "$ENV" == "PROD" ]; then
@@ -27,12 +30,12 @@ check_environment() {
 		elif [ "$command" == "uninstall" ]; then
 			check_permissions bin/uninstall-prod.sh
 		else
-			echo "Unknown command"
+			echo -e "${ORANGE}Unknown command${NC}"
 			exit 1
 		fi
 	else
-		echo "The environment is not set."
-		echo "Please set the environment in the .env file."
+		echo "${ORANGE}The environment is not set.${NC}"
+		echo "${YELLOW}Please set the environment in the .env file.${NC}"
 		exit 1
 	fi
 }

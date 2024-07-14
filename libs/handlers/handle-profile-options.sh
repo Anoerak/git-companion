@@ -16,11 +16,11 @@ remove_aliases() {
 	} >>"$PROFILE_DRAFT"
 	cat "$PROFILE_DRAFT" >"$PROFILE"
 	rm -f "$PROFILE_DRAFT"
-	echo "Aliases successfully removed from $PROFILE"
+	echo -e "${GREEN}Aliases successfully removed from${NC}${CYAN} $PROFILE${NC}"
 	if [ "$INSTALL_FLAG" == "install" ]; then
 		function_loop_folders bin
 	else
-		echo "Thank you for using the Git Companion"
+		echo -e "${YELLOW}Thank you for using the Git Companion${NC}"
 		exit 0
 	fi
 }
@@ -28,26 +28,26 @@ remove_aliases() {
 handle_profile_options() {
 	local INSTALL_FLAG=$1
 
-	echo "Do you want to remove the aliases from $PROFILE? [y/n]"
+	echo -e "${YELLOW}Do you want to remove the aliases from ${NC}${BLUE}$PROFILE${NC}${YELLOW}? [y/n]${NC}"
 	read -r REMOVE_ALIASES
 	if [ "$REMOVE_ALIASES" == "y" ]; then
 		remove_aliases $INSTALL_FLAG
 	elif [ "$REMOVE_ALIASES" == "n" ]; then
-		echo "Aliases will not be removed from $PROFILE"
-		echo "Do you want to add the new aliases? [y/n]"
+		echo -e "${ORANGE}Aliases will not be removed from ${NC}${BLUE}$PROFILE${NC}"
+		echo -e "${YELLOW}Do you want to add the new aliases? [y/n]${NC}"
 		read -r ADD_ALIASES
 		if [ "$ADD_ALIASES" == "y" ]; then
 			# We pass to the next step
 			function_loop_folders bin
 		elif [ "$ADD_ALIASES" == "n" ]; then
-			echo "Aliases will not be added to $PROFILE"
+			echo -e "${YELLOW}Aliases will not be added to ${NC}${BLUE}$PROFILE${NC}"
 			exit 0
 		else
-			echo "Invalid option"
+			echo -e "${ORANGE}Invalid option${NC}"
 			handle_profile_options
 		fi
 	else
-		echo "Invalid option"
+		echo -e "${ORANGE}Invalid option${NC}"
 		handle_profile_options
 	fi
 }

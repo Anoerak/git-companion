@@ -13,6 +13,9 @@
 
 ALIAS="gascii"
 
+# ANSI color codes
+source libs/color-codes.sh
+
 # Define the ASCII logo
 LOGO=$(cat <<'EOF'
 #   _______ _       _______                              _             
@@ -27,23 +30,23 @@ EOF
 
 # Function to print the header
 function_print_header() {
-	echo "******************************************"
-	echo "*                                        *"
-	echo "*      Welcome to GitCompanion!          *"
-	echo "*   Your friendly assistant for GIT.     *"
-	echo "*                                        *"
-	echo "******************************************"
-	echo ""
-	echo "$LOGO"
-	echo ""
+	echo -e "${CYAN}******************************************"
+	echo -e "*                                        *"
+	echo -e "*      Welcome to GitCompanion!          *"
+	echo -e "*   Your friendly assistant for GIT.     *"
+	echo -e "*                                        *"
+	echo -e "******************************************${NC}"
+	echo -e ""
+	echo -e "${YELLOW}$LOGO${NC}"
+	echo -e ""
 }
 
 # Function to print the footer
 function_print_footer() {
-	echo ""
-	echo "******************************************"
-	echo "*                                        *"
-	echo "*  Thank you for using GitCompanion!     *"
-	echo "*                                        *"
-	echo "******************************************"
+	echo -e ""
+	echo -e "${GREEN2}******************************************"
+	echo -e "*                                        *"
+	echo -e "*  Thank you for using GitCompanion!     *"
+	echo -e "*                                        *"
+	echo -e "******************************************${NC}"
 }

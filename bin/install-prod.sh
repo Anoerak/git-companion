@@ -8,8 +8,11 @@
 	# Install install-prod for the Git Companion
 	# by: Anørak
 	# version: 1.0
-	# updated: 2024-07-08
+	# updated: 2024-07-14
 # --------------------------------------------------
+
+# Load environment variables
+source libs/color-codes.sh
 
 PWD=$(pwd | sed 's/[^a-zA-Z0-9\/_-]/\\&/g')
 OS=$(uname -s)
@@ -60,10 +63,10 @@ function_loop_folders() {
     if [ "$ALIAS_FOUND" = true ]; then
         cat "$PROFILE_DRAFT" >> "$PROFILE"
         rm -f "$PROFILE_DRAFT"
-        echo "Aliases successfully added to $PROFILE"
+        echo -e "${GREEN}Aliases successfully added to ${NC}${CYAN}$PROFILE${NC}"
     else
         rm -f "$PROFILE_DRAFT"
-        echo "No aliases found. No changes were made to $PROFILE."
+        echo -e "${ORANE}No aliases found. ${NC}${YELLOW}No changes were made to${NC}${BLUE} $PROFILE.${NC}"
     fi
 
     cd - >/dev/null

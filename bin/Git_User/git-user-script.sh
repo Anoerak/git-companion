@@ -13,36 +13,39 @@
 
 ALIAS="guser"
 
+# ANSI color codes
+source libs/color-codes.sh
+
 # Function to set up the user informations
 function_set_user() {
-	echo "Setting up your user informations..."
-	read -p "Enter your name: " name
-	read -p "Enter your email: " email
+	echo -e "${YELLOW}Setting up your user informations...${NC}"
+	read -p "$(echo -e "${YELLOW}Enter your name: ${NC}")" name
+	read -p "$(echo -e "${YELLOW}}Enter your email: ${NC}")" email
 
 	git config --global user.name "$name"
 	git config --global user.email "$email"
 
-	echo "User informations set up successfully."
+	echo -e "${GREEN}User informations set up successfully.${NC}"
 }
 
 function_get_user() {
-	echo "Name=> $(git config --global user.name)"
-	echo "Email=> $(git config --global user.email)"
+	echo -e "${YELLOW}Name=> ${NC}${BLUE}$(git config --global user.name)${NC}"
+	echo -e "${YELLOW}Email=> ${NC}${BLUE}$(git config --global user.email)${NC}"
 }
 
 function_check_user() {
 	if [ -z "$(git config --global user.name)" ] || [ -z "$(git config --global user.email)" ]; then
-		echo "User informations not set up."
+		echo -e "${ORANGE}User informations not set up.${NC}"
 		function_set_user
 	else
-		echo "User informations already set up."
+		echo -e "${YELLOW}User informations already set up.${NC}"
 		function_get_user
 
-		read -p "Do you want to modify the user informations? (y/n): " choice
+		read -p "$(echo -e "${YELLOW}Do you want to modify the user informations? (y/n): ${NC}")" choice
 		if [ "$choice" = "y" ]; then
 			function_set_user
 		else
-			echo "Thank you."
+			echo -e "${GREEN}Thank you.${NC}"
 		fi
 	fi
 }
