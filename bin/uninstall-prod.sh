@@ -12,6 +12,7 @@
 # Load environment variables
 source libs/color-codes.sh
 
+# Variables
 PWD=$(pwd | sed 's/[^a-zA-Z0-9\/_-]/\\&/g')
 OS=$(uname -s)
 SHELL=$(echo $SHELL | awk -F '/' '{print $NF}')

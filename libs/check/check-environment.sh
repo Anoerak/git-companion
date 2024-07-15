@@ -34,8 +34,8 @@ check_environment() {
 			exit 1
 		fi
 	else
-		echo "${ORANGE}The environment is not set.${NC}"
-		echo "${YELLOW}Please set the environment in the .env file.${NC}"
+		echo -e "${ORANGE}The environment is not set.${NC}"
+		echo -e "${YELLOW}Please set the environment in the .env file.${NC}"
 		exit 1
 	fi
 }

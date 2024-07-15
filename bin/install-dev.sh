@@ -14,6 +14,7 @@
 # Load environment variables
 source libs/color-codes.sh
 
+# Variables
 PWD=$(pwd | sed 's/[^a-zA-Z0-9\/_-]/\\&/g')     # Let's get the base directory of the script and sanitize it
 OS=$(uname -s)                                  # Let's find out what system we are on
 SHELL=$(echo $SHELL | awk -F '/' '{print $NF}') # Let's find out what shell we are using
@@ -68,11 +69,16 @@ function_loop_folders() {
 }
 
 init() {
+    source libs/check/check-bash.sh
+    
+    source libs/check/check-git.sh
+
     source libs/imgs/imgs-ascii.sh
     function_print_header
 
     source libs/define-profile.sh
     init install
+
 
     function_loop_folders bin
 
