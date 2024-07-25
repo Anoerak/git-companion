@@ -11,6 +11,8 @@
 	# updated: 2024-06-24
 # --------------------------------------------------
 
+ALIAS="gbranch"
+
 # ANSI color codes
 # --------------------------------------------------
 source libs/color-codes.sh
@@ -24,8 +26,13 @@ GIT_BRANCH_CONFIG_FLAG=false
 GITIGNORE_FLAG=false
 
 # Variables
+# Regular expressions
 # --------------------------------------------------
-ALIAS="gbranch"
+# REGEX_OPENING="^[\-/\\~^:?*[\].@ ]"
+# REGEX_CLOSING="[\-/\\~^:?*[\].@ ]$"
+# REGEX_SPECIAL="[\\~^:?*[\].@()]"
+# REGEX_FINAL_1="[\\~^:?*[\].@()]"
+# REGEX_FINAL_2="(/|\\)\/|//"
 
 # Function to prompt for input
 prompt() {
@@ -310,6 +317,7 @@ select_branch_type() {
     echo -e "7) ${GREEN}test:${NC} For adding or modifying tests"
     echo -e "8) ${CYAN}custom:${NC} For custom branch types"
     echo -e "9) ${ORANGE}change user:${NC} To change the default username (current: ${GREEN}$USER_NAME${NC})"
+    echo -e "10) ${BLUE}Options:${NC} To modify branch options (rename, delete...)"
     read -p "$(echo -e "${YELLOW}Enter the number corresponding to the branch type: ${NC}")" branch_type_choice
 
     case $branch_type_choice in
@@ -326,9 +334,12 @@ select_branch_type() {
         modify_default_user
         select_branch_type
         ;;
+    10) BRANCH_OPTIONS=true
+        set_branch_options
+        ;;
     *)
         echo -e "${RED}Invalid choice${NC}"
-        ./git-branch-script.sh
+        select_branch_type
         ;;
     esac
 
@@ -519,7 +530,7 @@ prompt_branch_name() {
     fi
 
     # Remove all spaces and special characters. Replace spaces with hyphens.
-    BRANCH_NAME="${BRANCH_NAME//[^a-zA-Z0-9]/-}"
+    # BRANCH_NAME="${BRANCH_NAME//[^a-zA-Z0-9]/-}"
     # Convert to lowercase
     BRANCH_NAME=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]')
     # Trim to 64 characters
@@ -593,13 +604,157 @@ create_branch() {
         exit 1
     fi
 
-    # Create the branch
-    create_branch_options
+    # Let's cleanup a bit witht the cleanup function
+    clean_branch_name "$BRANCH_NAME" false
 }
 
+# Function to clean branch name
+clean_branch_name() {
+    local branch="$1"
+    local secondPass="$2"
+
+    # Rules:
+        #  1) They can include slash / for hierarchical (directory) grouping, but no slash-separated component can begin with a dot . or end with the sequence .lock.
+        #  2) They must contain at least one /. This enforces the presence of a category like heads/, tags/ etc. but the actual names are not restricted. If the --allow-onelevel option is used, this rule is waived.
+        #  3) They cannot have two consecutive dots .. anywhere.
+        #  4) They cannot have ASCII control characters (i.e. bytes whose values are lower than \040, or \177 DEL), space, tilde ~, caret ^, or colon : anywhere.
+        #  5) They cannot have question-mark ?, asterisk *, or open bracket [ anywhere. See the --refspec-pattern option below for an exception to this rule.
+        #  6) They cannot begin or end with a slash / or contain multiple consecutive slashes (see the --normalize option below for an exception to this rule)
+        #  7) They cannot end with a dot .
+        #  8) They cannot contain a sequence @{.
+        #  9) They cannot be the single character @.
+        #  10) They cannot contain a \.
+
+        # On top of that, additional rule for branch name:
+        #  11) They cannot start with a dash -.
+    
+    prompt_branch_name() {
+        echo -e "${YELLOW}Enter a new branch name:${NC}"
+        read -p "" branch
+        clean_branch_name "$branch" false
+    }
+
+    # We will notify the user if the branch name does not meet the requirements and suggest a new name by removing the invalid characters
+    validate_modification() {
+        local branch="$1"
+        local suggestion="$2"
+        echo -e "${YELLOW}Suggested branch name:${NC} ${GREEN}$suggestion${NC}"
+        echo -e "${YELLOW}Do you confirm the suggested branch name? (y/n): ${NC}"
+        read -p "" confirm
+        if [[ "$confirm" =~ ^[Yy]$ ]]; then
+            clean_branch_name "$suggestion" false
+        else
+            prompt_branch_name
+        fi
+    }
+
+    # Rule: Cannot start with a dash -
+    if [[ "$branch" == -* ]]; then
+        echo -e "${RED}Error: Branch name cannot start with a dash -${NC}"
+        suggestion="${branch#-}"
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Rule: No slash-separated component can begin with a dot . or end with the sequence .lock.
+    if [[ "$branch" == *./* || "$branch" == *.lock ]]; then
+        echo -e "${RED}Error: Branch name cannot contain a component that begins with a dot . or ends with the sequence .lock${NC}"
+        # We just remove the dot or .lock and keep one /
+        suggestion=$(echo "$branch" | sed 's/\.\//\//g; s/\.lock//g')
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Rule: Cannot have two consecutive dots ..
+    if [[ "$branch" == *..* ]]; then
+        echo -e "${RED}Error: Branch name cannot contain two consecutive dots ..${NC}"
+        suggestion=$(echo "$branch" | sed 's/\.\./\./g')
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Rule: Cannot contain ASCII control characters, space, tilde ~, caret ^, colon :, question mark ?, asterisk *, open/close braces {} or open/close brackets [].
+    if [[ "$branch" =~ [[:cntrl:]] || "$branch" =~ [[:space:]] || "$branch" =~ [~^:?*{}[\]\\\'] ]]; then
+        echo -e "${RED}Error: Branch name contains invalid characters. To get a list of invalid characters, run 'git check-ref-format --print'${NC}"
+        suggestion=$(echo "$branch" | sed 's/[[:cntrl:][:space:]~^:?*{}[\]\\\]//g')
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Rule: Cannot contain multiple consecutive slashes.
+    if [[ "$branch" == *//* ]]; then
+        echo -e "${RED}Error: Branch name cannot contain multiple consecutive slashes${NC}"
+        # We replace any sequence of double slashes with a single slash
+        suggestion=$(echo "$branch" | sed 's/\/\//\//g')
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Rule: Cannot end with a dot .
+    if [[ "$branch" == *\. ]]; then
+        echo -e "${RED}Error: Branch name cannot end with a dot .${NC}"
+        suggestion="${branch%.}"
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Rule: Cannot contain a sequence @{.
+    if [[ "$branch" == *@{* ]]; then
+        echo -e "${RED}Error: Branch name cannot contain a sequence @{${NC}"
+        suggestion=$(echo "$branch" | sed 's/@{//g')
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Rule: Cannot be the single character @.
+    if [[ "$branch" == "@" ]]; then
+        echo -e "${RED}Error: Branch name cannot be the single character @${NC}"
+        suggestion="at"
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Rule: Cannot contain a backslash \.
+    if [[ "$branch" == *\\* ]]; then
+        echo -e "${RED}Error: Branch name cannot contain a backslash \\${NC}"
+        suggestion=$(echo "$branch" | sed 's/\\//g')
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Rule: Cannot begin or end with a slash /
+    if [[ "$branch" == /* || "$branch" == */ ]]; then
+        echo -e "${RED}Error: Branch name cannot begin or end with a slash /${NC}"
+        suggestion=$(echo "$branch" | sed 's/^\/*//;s/\/*$//')
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Extra rule: Cannot contain a sequence dot followed by a slash ./ or a slash followed by a dot /.
+    if [[ "$branch" == *./* || "$branch" == */. ]]; then
+        echo -e "${RED}Error: Branch name cannot contain a sequence dot followed by a slash ./ or a slash followed by a dot /${NC}"
+        suggestion=$(echo "$branch" | sed 's/\.\///g; s/\/\./\//g')
+        validate_modification "$branch" "$suggestion"
+    fi
+
+    # Remove any opening or closing underscores
+    branch=$(echo "$branch" | sed 's/^_//;s/_$//')
+
+    # We check the branch name a second time.
+    # This is to ensure that the branch name meets the requirements after the user has made changes.
+    if [ "$secondPass" == false ]; then
+        clean_branch_name "$branch" true
+    else [ "$secondPass" == true ]
+        echo -e "${YELLOW}Previous branch name:${NC} ${RED}$BRANCH_NAME${NC}"
+        echo -e "${YELLOW}New branch name:${NC} ${GREEN}$branch${NC}"
+
+        # We ask for confirmation before creating the branch
+        read -p "$(echo -e "${YELLOW}Confirm the new branch name? (y/n): ${NC}")" confirm
+        if [[ "$confirm" =~ ^[Yy]$ ]]; then
+            BRANCH_NAME="$branch"
+
+            # Create the branch
+            create_branch_options
+        else
+            exit 1
+        fi
+    fi
+}
+
+# Function to handle branch modification
 create_branch_options() {
     # We ask for a confirmation before creating the branch
-    read -p "$(echo -e "${YELLOW}Create branch${NC} '${GREEN}$BRANCH_NAME'? (y/n): ${NC}")" confirm
+    read -p "$(echo -e "${YELLOW}Create branch${NC} '${GREEN}$BRANCH_NAME'${NC}${YELLOW}? (y/n): ${NC}")" confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         git checkout -b "$BRANCH_NAME"
         echo -e "${YELLOW}Branch ${GREEN}'$BRANCH_NAME'${NC} created successfully.${NC}"
@@ -744,6 +899,13 @@ handle_branch_modification() {
 
     INITIAL_BRANCH_NAME=$BRANCH_NAME
 
+    # Are we on a "develop" or "master" or any one word branch?
+    if [[ "$INITIAL_BRANCH_NAME" =~ ^[a-zA-Z0-9]+$ ]]; then
+        BRANCH_OPTIONS=false
+        BRANCH_NAME="${USER_NAME}/${value}"
+        return
+    fi
+
     # We parse the initial branch name to get all parts
     IFS='/' read -r -a branch_parts <<<"$INITIAL_BRANCH_NAME"
     # Is there a scope in the branch name? If so, we need to keep it (it should be in between parentheses)
@@ -880,6 +1042,43 @@ handle_branch_modification() {
         ;;
     esac
 
+}
+
+set_branch_options() {
+    # What do we want to do?
+    echo -e "${YELLOW}Select an action:${NC}"
+    echo -e "${GREEN}1)${NC} ${GREEN}Rename branch${NC}"
+    echo -e "${GREEN}2)${NC} ${GREEN}Delete branch${NC}"
+    echo -e "${RED}3)${NC} ${ORANGE}Exit the script${NC}"
+    read -p "$(echo -e "${YELLOW}Enter the number corresponding to the action: ${NC}")" action_choice
+    case $action_choice in
+    1)
+        prompt "NEW_BRANCH_NAME" "Enter the new branch name" ""
+        if [[ -n "$NEW_BRANCH_NAME" ]]; then
+            handle_branch_modification "branch_name" "$NEW_BRANCH_NAME"
+        fi
+        ;;
+    2)
+        read -p "$(echo -e "${YELLOW}Are you sure you want to delete branch${NC} '${GREEN}$BRANCH_NAME'? (y/n): ${NC}")" confirm
+        if [[ "$confirm" =~ ^[Yy]$ ]]; then
+            git branch -D "$BRANCH_NAME"
+            echo -e "${YELLOW}Branch ${GREEN}'$BRANCH_NAME'${NC} deleted successfully.${NC}"
+        else
+            # No choices, ask again
+            if [[ "$confirm" =~ ^[Nn]$ ]]; then
+                set_branch_options
+            else
+                echo -e "${RED}Invalid choice${NC}"
+                set_branch_options
+            fi
+        fi
+        ;;
+    3) exit 1 ;;
+    *)
+        echo -e "${RED}Invalid choice${NC}"
+        set_branch_options
+        ;;
+    esac
 }
 
 # Execute the main function
