@@ -13,13 +13,7 @@
 
 # ANSI color codes
 # --------------------------------------------------
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-ORANGE='\033[38;5;214m' # Custom code for orange
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+source libs/color-codes.sh
 
 # Flags
 # --------------------------------------------------
@@ -59,9 +53,9 @@ modify_default_user() {
         if [ "$NO_USER_FLAG" == true ]; then
             NO_USER_FLAG=false
             echo -e "${YELLOW}Select an action:${NC}"
-            echo -e "1) ${GREEN}Change default username${NC}"
-            echo -e "2) ${GREEN}Change username for this branch only${NC}"
-            echo -e "3) ${ORANGE}Exit the script${NC}"
+            echo -e "${GREEN}1)${NC} ${CYAN}Change default username${NC}"
+            echo -e "${GREEN}2)${NC} ${CYAN}Change username for this branch only${NC}"
+            echo -e "${RED}3)${NC} ${ORANGE}Exit the script${NC}"
             read -p "$(echo -e "${YELLOW}Enter the number corresponding to the action: ${NC}")" action_choice
 
             case $action_choice in
@@ -156,8 +150,8 @@ create_git_branch_config() {
 
 handle_script_exit() {
     echo -e "${YELLOW}What do you want to do?${NC}"
-    echo -e "1) ${GREEN}Come back to main menu${NC}"
-    echo -e "2) ${ORANGE}Exit the script${NC}"
+    echo -e "${GREEN}1)${NC} ${CYAN}Come back to main menu${NC}"
+    echo -e "${RED}2)${NC} ${ORANGE}Exit the script${NC}"
     read -p "$(echo -e "${YELLOW}Enter the number corresponding to the action: ${NC}")" action_choice
 
     if [ "$action_choice" == "1" ]; then
@@ -202,9 +196,9 @@ select_user() {
 
 prompt_user_action() {
     echo -e "${YELLOW}Select an action:${NC}"
-    echo -e "1) ${GREEN}Change default username${NC}"
-    echo -e "2) ${GREEN}Change username for this branch only${NC}"
-    echo -e "3) ${ORANGE}Exit the script${NC}"
+    echo -e "${GREEN}1)${NC} ${CYAN}Change default username${NC}"
+    echo -e "${GREEN}2)${NC} ${CYAN}Change username for this branch only${NC}"
+    echo -e "${RED}3)${NC} ${ORANGE}Exit the script${NC}"
     read -p "$(echo -e "${YELLOW}Enter the number corresponding to the action: ${NC}")" action_choice
     case $action_choice in
     1)
@@ -307,9 +301,9 @@ prompt_modify_action() {
     read -p "$(echo -e "${YELLOW}Do you want to modify something? (y/n): ${NC}")" modify
     if [[ "$modify" =~ ^[Yy]$ ]]; then
         echo -e "${YELLOW}Select an action:${NC}"
-        echo -e "1) ${GREEN}Change default username${NC}"
-        echo -e "2) ${GREEN}Change username for this branch only${NC}"
-        echo -e "3) ${ORANGE}Exit the script${NC}"
+        echo -e "${GREEN}1)${NC} ${CYAN}Change default username${NC}"
+        echo -e "${GREEN}2)${NC} ${CYAN}Change username for this branch only${NC}"
+        echo -e "${RED}3)${NC} ${ORANGE}Exit the script${NC}"
         read -p "$(echo -e "${YELLOW}Enter the number corresponding to the action: ${NC}")" action_choice
         case $action_choice in
         1)
@@ -353,16 +347,16 @@ prompt_modify_action() {
 select_branch_type() {
     # What type of branch are we creating?
     echo -e "${BLUE}Select branch type:${NC}"
-    echo -e "0) ${GREEN}develop${NC} For development branch (default and should be unique)"
-    echo -e "1) ${GREEN}feature:${NC} For new features development"
-    echo -e "2) ${GREEN}bugfix:${NC} For bug fixes and hotfixes (select critical bugfix YES for hotfix)"
-    echo -e "3) ${GREEN}release:${NC} For preparing a new release"
-    echo -e "4) ${GREEN}improvement:${NC} For refactoring existing code or improving performance, update dependencies.."
-    echo -e "5) ${GREEN}experimental:${NC} For experimental changes"
-    echo -e "6) ${GREEN}docs:${NC} For documentation changes"
-    echo -e "7) ${GREEN}test:${NC} For adding or modifying tests"
-    echo -e "8) ${ORANGE}custom:${NC} For custom branch types"
-    echo -e "9) ${CYAN}change user:${NC} To change the username (current: ${GREEN}$USER_NAME${NC})"
+    echo -e "${GREEN}0)${NC} ${CYAN}develop${NC} For development branch (default and should be unique)"
+    echo -e "${GREEN}1)${NC} ${CYAN}feature:${NC} For new features development"
+    echo -e "${GREEN}2)${NC} ${CYAN}bugfix:${NC} For bug fixes and hotfixes (select critical bugfix YES for hotfix)"
+    echo -e "${GREEN}3)${NC} ${CYAN}release:${NC} For preparing a new release"
+    echo -e "${GREEN}4)${NC} ${CYAN}improvement:${NC} For refactoring existing code or improving performance, update dependencies.."
+    echo -e "${GREEN}5)${NC} ${CYAN}experimental:${NC} For experimental changes"
+    echo -e "${GREEN}6)${NC} ${CYAN}docs:${NC} For documentation changes"
+    echo -e "${GREEN}7)${NC} ${CYAN}test:${NC} For adding or modifying tests"
+    echo -e "${RED}8)${NC} ${ORANGE}custom:${NC} For custom branch types"
+    echo -e "${CYAN}9)${NC} ${BLUE}change user:${NC} To change the username (current: ${GREEN}$USER_NAME${NC})"
     read -p "$(echo -e "${YELLOW}Enter the number corresponding to the branch type: ${NC}")" branch_type_choice
 
     case $branch_type_choice in
@@ -499,9 +493,9 @@ enter_release_version() {
 
         # What do we do next?
         echo -e "${YELLOW}Select an action:${NC}"
-        echo -e "1) ${GREEN}Edit your version number${NC}"
-        echo -e "2) ${GREEN}Edit the tag${NC}"
-        echo -e "3) ${ORANGE}Exit the script${NC}"
+        echo -e "${GREEN}1)${NC} ${CYAN}Edit your version number${NC}"
+        echo -e "${GREEN}2)${NC} ${CYAN}Edit the tag${NC}"
+        echo -e "${RED}3)${NC} ${ORANGE}Exit the script${NC}"
         read -p "$(echo -e "${YELLOW}Enter the number corresponding to the action: ${NC}")" action_choice
         case $action_choice in
         1) enter_release_version ;;
@@ -597,8 +591,8 @@ prompt_branch_name() {
         echo -e "${RED}Error: Branch name cannot be empty.${NC}"
         # What do we do from here?
         echo -e "${YELLOW}Select an action:${NC}"
-        echo -e "1) ${GREEN}Edit the branch name${NC}"
-        echo -e "2) ${ORANGE}Exit the script${NC}"
+        echo -e "${GREEN}1) ${CYAN}Edit the branch name${NC}"
+        echo -e "${RED}2) ${ORANGE}Exit the script${NC}"
         read -p "$(echo -e "${YELLOW}Enter the number corresponding to the action: ${NC}")" action_choice
         case $action_choice in
         1) prompt_branch_name ;;
@@ -621,8 +615,8 @@ check_version_comparison() {
     if [[ -n $comparison ]]; then
         echo -e "${RED}Error: Release version $RELEASE_VERSION is $message the latest tag $latest_tag.${NC}"
         echo -e "${YELLOW}Select an action:${NC}"
-        echo -e "1) ${GREEN}Edit your version number${NC}"
-        echo -e "2) ${ORANGE}Ignore and continue${NC}"
+        echo -e "${GREEN}1)${NC} ${CYAN}Edit your version number${NC}"
+        echo -e "${RED}2)${NC} ${ORANGE}Ignore and continue${NC}"
         read -p "$(echo -e "${YELLOW}Enter the number corresponding to the action: ${NC}")" action_choice
         case $action_choice in
         1) enter_release_version ;;
@@ -670,31 +664,31 @@ create_branch_options() {
             if [[ "$modify" =~ ^[Yy]$ ]]; then
                 # What do you want to modify?
                 echo -e "${YELLOW}Select an action:${NC}"
-                echo -e "0) ${BLUE}Change Username${NC}"
+                echo -e "${GREEN}0)${NC} ${BLUE}Change Username${NC}"
                 # Dynamic choices based on the branch type
                 case $BRANCH_TYPE in
                 develop | feature | improvement | test | experimental | docs)
-                    echo -e "1) ${GREEN}Change Branch type${NC}"
-                    echo -e "2) ${GREEN}Change Scope${NC}"
-                    echo -e "3) ${GREEN}Change Branch name${NC}"
+                    echo -e "${GREEN}1)${NC} ${CYAN}Change Branch type${NC}"
+                    echo -e "${GREEN}2)${NC} ${CYAN}Change Scope${NC}"
+                    echo -e "${GREEN}3)${NC} ${CYAN}Change Branch name${NC}"
                     if [[ -n "$TICKET_ID" ]]; then
-                        echo -e "4) ${GREEN}Change Ticket ID${NC}"
+                        echo -e "${GREEN}4)${NC} ${CYAN}Change Ticket ID${NC}"
                     fi
                     ;;
                 bugfix | hotfix)
-                    echo -e "1) ${GREEN}Change Branch type${NC}"
-                    echo -e "2) ${GREEN}Change Issue ID${NC}"
-                    echo -e "3) ${GREEN}Change Branch name${NC}"
+                    echo -e "${GREEN}1)${NC} ${CYAN}Change Branch type${NC}"
+                    echo -e "${GREEN}2)${NC} ${CYAN}Change Issue ID${NC}"
+                    echo -e "${GREEN}3)${NC} ${CYAN}Change Branch name${NC}"
                     if [[ -n "$TICKET_ID" ]]; then
-                        echo -e "4) ${GREEN}Change Ticket ID${NC}"
+                        echo -e "${GREEN}4)${NC} ${CYAN}Change Ticket ID${NC}"
                     fi
                     ;;
                 release)
-                    echo -e "1) ${GREEN}Change Branch type${NC}"
-                    echo -e "2) ${GREEN}Change Release version${NC}"
-                    echo -e "3) ${GREEN}Change Branch name${NC}"
+                    echo -e "${GREEN}1)${NC} ${CYAN}Change Branch type${NC}"
+                    echo -e "${GREEN}2)${NC} ${CYAN}Change Release version${NC}"
+                    echo -e "${GREEN}3)${NC} ${CYAN}Change Branch name${NC}"
                     if [[ -n "$TICKET_ID" ]]; then
-                        echo -e "4) ${GREEN}Change Ticket ID${NC}"
+                        echo -e "${GREEN}4)${NC} ${CYAN}Change Ticket ID${NC}"
                     fi
                     ;;
                 esac
@@ -709,15 +703,15 @@ create_branch_options() {
                 1)
                     # What type of branch are we creating?
                     echo -e "${BLUE}Select branch type:${NC}"
-                    echo -e "0) ${GREEN}develop${NC} For development branch (default and should be unique)"
-                    echo -e "1) ${GREEN}feature:${NC} For new features development"
-                    echo -e "2) ${GREEN}bugfix:${NC} For bug fixes and hotfixes (select critical bugfix YES for hotfix)"
-                    echo -e "3) ${GREEN}release:${NC} For preparing a new release"
-                    echo -e "4) ${GREEN}improvement:${NC} For refactoring existing code or improving performance, update dependencies.."
-                    echo -e "5) ${GREEN}experimental:${NC} For experimental changes"
-                    echo -e "6) ${GREEN}docs:${NC} For documentation changes"
-                    echo -e "7) ${GREEN}test:${NC} For adding or modifying tests"
-                    echo -e "8) ${CYAN}custom:${NC} For custom branch types"
+                    echo -e "${GREEN}0)${NC} ${CYAN}develop${NC} For development branch (default and should be unique)"
+                    echo -e "${GREEN}1)${NC} ${CYAN}feature:${NC} For new features development"
+                    echo -e "${GREEN}2)${NC} ${CYAN}bugfix:${NC} For bug fixes and hotfixes (select critical bugfix YES for hotfix)"
+                    echo -e "${GREEN}3)${NC} ${CYAN}release:${NC} For preparing a new release"
+                    echo -e "${GREEN}4)${NC} ${CYAN}improvement:${NC} For refactoring existing code or improving performance, update dependencies.."
+                    echo -e "${GREEN}5)${NC} ${CYAN}experimental:${NC} For experimental changes"
+                    echo -e "${GREEN}6)${NC} ${CYAN}docs:${NC} For documentation changes"
+                    echo -e "${GREEN}7)${NC} ${CYAN}test:${NC} For adding or modifying tests"
+                    echo -e "${CYAN}8)${NC} ${BLUE}custom:${NC} For custom branch types"
                     read -p "$(echo -e "${YELLOW}Enter the number corresponding to the branch type: ${NC}")" branch_type_choice
 
                     case $branch_type_choice in
