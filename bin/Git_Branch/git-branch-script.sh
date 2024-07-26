@@ -695,14 +695,18 @@ clean_branch_name() {
     # Rule: Cannot contain a sequence @{.
     if [[ "$branch" == *@{* ]]; then
         echo -e "${RED}Error: Branch name cannot contain a sequence @{${NC}"
-        suggestion=$(echo "$branch" | sed 's/@{//g')
+        read -p "$(echo -e "${YELLOW}Enter a replacement for the sequence @{: ${NC}")" replacement
+        suggestion=$(echo "$branch" | sed "s/@{/$replacement/g")
         validate_modification "$branch" "$suggestion"
     fi
 
     # Rule: Cannot be the single character @.
-    if [[ "$branch" == "@" ]]; then
+    if [[ "$branch" == *@* ]]; then
         echo -e "${RED}Error: Branch name cannot be the single character @${NC}"
-        suggestion="at"
+        # We offer the user to type a replacement for the single character @
+        read -p "$(echo -e "${YELLOW}Enter a replacement for the single character @: ${NC}")" replacement
+        # We replace the @ with the user input
+        suggestion=$(echo "$branch" | sed "s/@/$replacement/g")
         validate_modification "$branch" "$suggestion"
     fi
 
