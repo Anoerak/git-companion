@@ -83,7 +83,11 @@ init() {
     function_loop_folders bin
 
     function_print_footer
+    
+    # We reload the profile to apply the changes
     source "$PROFILE"
+
+    source ../Git_First-launch/git-first-launch.sh
 }
 
 init
