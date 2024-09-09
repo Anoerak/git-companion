@@ -8,7 +8,7 @@
 	# updated: 2024-06-24
 # --------------------------------------------------
 
-uninstall() {
+function uninstall() {
 	source libs/load-env.sh
 	source libs/check/check-environment.sh
 	check_environment uninstall

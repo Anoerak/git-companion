@@ -226,7 +226,7 @@ gitignore_content=(
     "Thumbs.db"
 )
 
-create_gitignore() {
+function create_gitignore() {
 	printf "%s\n" "${gitignore_content[@]}" > .gitignore
 }
 

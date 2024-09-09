@@ -70,13 +70,13 @@ declare -A git_options=(
     [23]="add <submodule_url> update --init update --remote"
 )
 
-prompt_user() {
+function prompt_user() {
     local prompt_message="$1"
     read -p "$(echo -e "${YELLOW}$prompt_message${NC}")" user_input
     echo "$user_input"
 }
 
-construct_arguments() {
+function construct_arguments() {
     local cmd_number="$1"
     local arguments=""
     IFS=' ' read -r -a arg_numbers <<< "$2"
@@ -98,7 +98,7 @@ construct_arguments() {
     echo -e "$arguments"
 }
 
-function_choose_git_command() {
+function choose_git_command() {
     echo -e "${YELLOW}Welcome to Git Help!${NC}"
     echo -e "${YELLOW}Here are the available Git commands:${NC}"
 
@@ -132,8 +132,8 @@ function_choose_git_command() {
     eval $final_command
 }
 
-init() {
-    function_choose_git_command
+function init() {
+    choose_git_command
 }
 
 init

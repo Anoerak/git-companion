@@ -18,7 +18,7 @@ ALIAS="ghelp"
 source libs/color-codes.sh
 
 # Function to display the help menu
-function_help_menu() {
+function help_menu() {
     echo -e "${YELLOW}Welcome to Git Help!${NC}"
     echo -e "${YELLOW}Here are the available Git commands:${NC}"
     echo -e "${GREEN}1.${NC} ${CYAN}Git User ${YELLOW}(guser)${NC} # Set up your user informations${NC}"
@@ -74,4 +74,4 @@ function_help_menu() {
 }
 
 # Main function to display the help menu
-function_help_menu
+help_menu

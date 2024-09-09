@@ -13,16 +13,21 @@
 
 ALIAS="gfirst-launch"
 
-# ANSI color codes
-source libs/color-codes.sh
 
 # Variables
 ESCAPE_PATH=$(echo $(pwd) | sed 's/[^a-zA-Z0-9\/_-]/\\&/g')
 cd ".." || exit
 FIRST_LAUNCH_MESSAGE="Welcome to Git Companion! This is your first time launching the script. Let's get started by setting up your user information."
 
+# ANSI color codes
+if [ -f "/usr/local/bin/git_companion/color-codes.sh" ]; then
+	source /usr/local/bin/git_companion/color-codes.sh
+else
+	source ./color-codes.sh
+fi
+
 # Function to access the first launch menu
-function_access_first_launch() {
+function access_first_launch() {
 	# We print the header of the first launch menu
 	echo -e "${YELLOW}Welcome to Git Companion!${NC}"
 	echo ""
@@ -51,9 +56,9 @@ function_access_first_launch() {
 	bash "$ESCAPE_PATH/bin/Git_Menu/git-menu.sh"
 }
 
-init() {
+function init() {
 	echo -e "${FIRST_LAUNCH_MESSAGE}"
-	function_access_first_launch
+	access_first_launch
 }
 
 init

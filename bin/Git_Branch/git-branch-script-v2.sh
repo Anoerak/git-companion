@@ -29,7 +29,7 @@ GITIGNORE_FLAG=false
 ALIAS="gbranch2"
 
 # Function to prompt for input
-prompt() {
+function prompt() {
     local var_name=$1
     local prompt_message=$2
     local default_value=$3
@@ -41,7 +41,7 @@ prompt() {
     # eval $var_name='"${input:-$default_value}"'
 }
 
-modify_default_user() {
+function modify_default_user() {
     read -p "$(echo -e "${YELLOW}Change default username? (y/n): ${NC}")" change_user
     if [[ "$change_user" =~ ^[Yy]$ ]]; then
         MODIFY_DEFAULT_USER=true
@@ -81,7 +81,7 @@ modify_default_user() {
     fi
 }
 
-create_git_branch_config() {
+function create_git_branch_config() {
     if [ -f .git-branch-config ]; then
         return
     fi
@@ -148,7 +148,7 @@ create_git_branch_config() {
     fi
 }
 
-handle_script_exit() {
+function handle_script_exit() {
     echo -e "${YELLOW}What do you want to do?${NC}"
     echo -e "${GREEN}1)${NC} ${CYAN}Come back to main menu${NC}"
     echo -e "${RED}2)${NC} ${ORANGE}Exit the script${NC}"
@@ -163,7 +163,7 @@ handle_script_exit() {
     fi
 }
 
-select_user() {
+function select_user() {
     # If a default username is saved, we use it
     if [ -f .git-branch-config ] && [ "$MODIFY_DEFAULT_USER" != true ]; then
         source .git-branch-config
@@ -194,7 +194,7 @@ select_user() {
     fi
 }
 
-prompt_user_action() {
+function prompt_user_action() {
     echo -e "${YELLOW}Select an action:${NC}"
     echo -e "${GREEN}1)${NC} ${CYAN}Change default username${NC}"
     echo -e "${GREEN}2)${NC} ${CYAN}Change username for this branch only${NC}"
@@ -218,7 +218,7 @@ prompt_user_action() {
     esac
 }
 
-prompt_for_username() {
+function prompt_for_username() {
     local system_os=$(uname)
     local users
 
@@ -257,7 +257,7 @@ prompt_for_username() {
     done
 }
 
-prompt_custom_username() {
+function prompt_custom_username() {
     prompt "USER_NAME" "Enter your username" ""
     if [ "$MODIFY_USER_FLAG" == true ]; then
         read -p "$(echo -e "${YELLOW}Use${NC} '${BLUE}$USER_NAME${NC}' ${YELLOW}as username for this branch? (y/n): ${NC}")" save
@@ -268,7 +268,7 @@ prompt_custom_username() {
     handle_username_save "$save"
 }
 
-confirm_username_save() {
+function confirm_username_save() {
     if [ "$MODIFY_USER_FLAG" == true ]; then
         read -p "$(echo -e "${YELLOW}Use${NC} '${BLUE}$USER_NAME${NC}' ${YELLOW}as username for this branch? (y/n): ${NC}")" save
         MODIFY_DEFAULT_USER=false
@@ -278,7 +278,7 @@ confirm_username_save() {
     handle_username_save "$save"
 }
 
-handle_username_save() {
+function handle_username_save() {
     local save=$1
     if [[ "$save" =~ ^[Yy]$ ]]; then
         if [ "$MODIFY_DEFAULT_USER" == true ]; then
@@ -297,7 +297,7 @@ handle_username_save() {
     fi
 }
 
-prompt_modify_action() {
+function prompt_modify_action() {
     read -p "$(echo -e "${YELLOW}Do you want to modify something? (y/n): ${NC}")" modify
     if [[ "$modify" =~ ^[Yy]$ ]]; then
         echo -e "${YELLOW}Select an action:${NC}"
@@ -344,7 +344,7 @@ prompt_modify_action() {
 }
 
 # Function to select branch type
-select_branch_type() {
+function select_branch_type() {
     # What type of branch are we creating?
     echo -e "${BLUE}Select branch type:${NC}"
     echo -e "${GREEN}0)${NC} ${CYAN}develop${NC} For development branch (default and should be unique)"
@@ -413,14 +413,14 @@ select_branch_type() {
 }
 
 # Function to enter scope (optional)
-enter_scope() {
+function enter_scope() {
     prompt "BRANCH_SCOPE" "Enter the scope of the change (e.g., component, module)" ""
     if [[ -n "$BRANCH_SCOPE" ]]; then
         BRANCH_SCOPE="($BRANCH_SCOPE)"
     fi
 }
 
-enter_bugfix_or_hotfix() {
+function enter_bugfix_or_hotfix() {
     # Are we creating a bugfix or a hotfix?
     read -p "$(echo -e "${YELLOW}Is this a critical bugfix? (y/n): ${NC}")" critical_bugfix
 
@@ -442,7 +442,7 @@ enter_bugfix_or_hotfix() {
 
 }
 
-enter_release_version() {
+function enter_release_version() {
     # New tag flag
     new_tag=false
 
@@ -545,7 +545,7 @@ enter_release_version() {
     fi
 }
 
-enter_improvement_feature_test_custom() {
+function enter_improvement_feature_test_custom() {
     prompt_branch_name
 
     prompt "TICKET_ID" "Enter the ticket reference, if any" ""
@@ -606,7 +606,7 @@ prompt_branch_name() {
     fi
 }
 
-check_version_comparison() {
+function check_version_comparison() {
     local comparison="$1"
     local message="$2"
 
@@ -630,7 +630,7 @@ check_version_comparison() {
 }
 
 # Main function to create branch
-create_branch() {
+function create_branch() {
     select_user
     select_branch_type
 
@@ -644,7 +644,7 @@ create_branch() {
     create_branch_options
 }
 
-create_branch_options() {
+function create_branch_options() {
     # We ask for a confirmation before creating the branch
     read -p "$(echo -e "${YELLOW}Create branch${NC} '${GREEN}$BRANCH_NAME'? (y/n): ${NC}")" confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
@@ -785,7 +785,7 @@ create_branch_options() {
     fi
 }
 
-handle_branch_modification() {
+function handle_branch_modification() {
     local element=$1
     local value=$2
 

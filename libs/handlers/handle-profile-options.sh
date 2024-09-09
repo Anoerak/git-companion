@@ -7,7 +7,7 @@
 	# updated: 2024-06-24
 # --------------------------------------------------
 
-remove_aliases() {
+function remove_aliases() {
 	local INSTALL_FLAG=$1
 
 	PROFILE_DRAFT=$(mktemp)
@@ -18,14 +18,14 @@ remove_aliases() {
 	rm -f "$PROFILE_DRAFT"
 	echo -e "${GREEN}Aliases successfully removed from${NC}${CYAN} $PROFILE${NC}"
 	if [ "$INSTALL_FLAG" == "install" ]; then
-		function_loop_folders bin
+		loop_folders bin
 	else
 		echo -e "${YELLOW}Thank you for using the Git Companion${NC}"
 		exit 0
 	fi
 }
 
-handle_profile_options() {
+function handle_profile_options() {
 	local INSTALL_FLAG=$1
 
 	echo -e "${YELLOW}Do you want to remove the aliases from ${NC}${BLUE}$PROFILE${NC}${YELLOW}? [y/n]${NC}"
@@ -38,7 +38,7 @@ handle_profile_options() {
 		read -r ADD_ALIASES
 		if [ "$ADD_ALIASES" == "y" ]; then
 			# We pass to the next step
-			function_loop_folders bin
+			loop_folders bin
 		elif [ "$ADD_ALIASES" == "n" ]; then
 			echo -e "${YELLOW}Aliases will not be added to ${NC}${BLUE}$PROFILE${NC}"
 			exit 0

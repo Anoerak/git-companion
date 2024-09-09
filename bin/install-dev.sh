@@ -19,7 +19,14 @@ PWD=$(pwd | sed 's/[^a-zA-Z0-9\/_-]/\\&/g')     # Let's get the base directory o
 OS=$(uname -s)                                  # Let's find out what system we are on
 SHELL=$(echo $SHELL | awk -F '/' '{print $NF}') # Let's find out what shell we are using
 
-function_loop_folders() {
+# ANSI color codes
+if [ -f "/usr/local/bin/git_companion/color-codes.sh" ]; then
+	source /usr/local/bin/git_companion/color-codes.sh
+else
+	source $PWD/libs/color-codes.sh
+fi
+
+function loop_folders() {
     local FOLDER=$1
     PROFILE_DRAFT=$(mktemp)
     ALIAS_FOUND=false
@@ -68,21 +75,20 @@ function_loop_folders() {
     cd - >/dev/null
 }
 
-init() {
+function init() {
     source libs/check/check-bash.sh
     
     source libs/check/check-git.sh
 
     source libs/imgs/imgs-ascii.sh
-    function_print_header
+    print_header
 
     source libs/define-profile.sh
     init install
 
+    loop_folders bin
 
-    function_loop_folders bin
-
-    function_print_footer
+    print_footer
     
     # We reload the profile to apply the changes
     source "$PROFILE"

@@ -10,7 +10,7 @@
 # ANSI color codes
 source libs/color-codes.sh
 
-load_env() {
+function load_env() {
 	if [ -f .env ]; then
 		source .env
 	else

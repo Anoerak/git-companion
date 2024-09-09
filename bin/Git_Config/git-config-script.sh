@@ -17,7 +17,7 @@ ALIAS="gconfig"
 source libs/color-codes.sh
 
 # Function to set up your .gitconfig, .gitignore, .git-branch-config, .git-commit-config or .gitattributes
-function_set_config() {
+function set_config() {
 	echo -e "${YELLOW}Setting up your Git configuration...${NC}"
 	echo -e "${BLUE}Which configuration file do you want to set up?${NC}"
 	echo -e "${GREEN}1) ${NC}${CYAN}.gitconfig${NC}"
@@ -35,12 +35,12 @@ function_set_config() {
 					if [ "$action" = "y" ]; then
 						rm ~/.gitconfig
 					else
-						function_set_config
+						set_config
 					fi
 				elif [ "$action" = "o" ]; then
 					rm ~/.gitconfig
 				else
-					function_set_config 
+					set_config 
 				fi
 			fi
 			read -p "$(echo -e "${YELLOW}Enter your name: ${NC} ")" name
@@ -55,12 +55,12 @@ function_set_config() {
 					if [ "$action" = "y" ]; then
 						rm .gitignore
 					else
-						function_set_config
+						set_config
 					fi
 				elif [ "$action" = "o" ]; then
 					rm .gitignore
 				else
-					function_set_config
+					set_config
 				fi
 			fi
 			read -p "$(echo -e "${YELLOW}Enter the files you want to ignore using a space between each file or type 'template' to use a template:  ${NC} ")" files
@@ -79,12 +79,12 @@ function_set_config() {
 					if [ "$action" = "y" ]; then
 						rm .git-branch-config
 					else
-						function_set_config
+						set_config
 					fi
 				elif [ "$action" = "o" ]; then
 					rm .git-branch-config
 				else
-					function_set_config
+					set_config
 				fi
 			fi
 			read -p "$(echo -e "${YELLOW}Enter the branch you want to set up:  ${NC} ")" branch
@@ -97,12 +97,12 @@ function_set_config() {
 					if [ "$action" = "y" ]; then
 						rm .git-commit-config
 					else
-						function_set_config
+						set_config
 					fi
 				elif [ "$action" = "o" ]; then
 					rm .git-commit-config
 				else
-					function_set_config
+					set_config
 				fi
 			fi
 			read -p "$(echo -e "${YELLOW}Enter the commit message you want to set up:  ${NC} ")" message
@@ -115,12 +115,12 @@ function_set_config() {
 					if [ "$action" = "y" ]; then
 						rm .gitattributes
 					else
-						function_set_config
+						set_config
 					fi
 				elif [ "$action" = "o" ]; then
 					rm .gitattributes
 				else
-					function_set_config
+					set_config
 				fi
 			fi
 			read -p "$(echo -e "${YELLOW}Enter the attributes you want to set up using a space between each attribute:  ${NC} ")" attributes
@@ -133,8 +133,8 @@ function_set_config() {
 }
 
 # Function to init
-init() {
-	function_set_config
+function init() {
+	set_config
 }
 
 init

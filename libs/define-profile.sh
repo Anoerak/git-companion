@@ -11,7 +11,7 @@
 source libs/color-codes.sh
 
 # Base on the system, we will add the alias to the correct file
-define_profile() {
+function define_profile() {
 	if [ "$OS" == "Darwin" ]; then
 		if [ "$SHELL" == "bash" ]; then
 			PROFILE=~/.bash_profile
@@ -32,14 +32,14 @@ define_profile() {
 	fi
 }
 
-check_profile() {
+function check_profile() {
 	if [ ! -f "$PROFILE" ]; then
 		echo -e "${YELLOW}Profile file${NC}${ORANGE} $PROFILE ${NC}${YELLOW}not found${NC}"
 		return 1
 	fi
 }
 
-check_profile_for_alias() {
+function check_profile_for_alias() {
 	local ORGIGIN_REQUEST=$1
 
 	if grep -q "# GIT COMPANION start" "$PROFILE"; then
@@ -55,7 +55,7 @@ check_profile_for_alias() {
 	else 
 		# what do we do?
 		if [ "$ORGIGIN_REQUEST" == "install" ]; then
-			function_loop_folders bin
+			loop_folders bin
 		else
 			echo -e "${YELLOW}There are no Git Companion aliases in ${NC}${BLUE}$PROFILE${NC}"
 			exit 0
@@ -63,7 +63,7 @@ check_profile_for_alias() {
 	fi
 }
 
-init() {
+function init() {
 	local REQUEST=$1
 
 	define_profile

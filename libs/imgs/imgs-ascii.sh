@@ -29,7 +29,7 @@ EOF
 )
 
 # Function to print the header
-function_print_header() {
+function print_header() {
 	echo -e "${CYAN}******************************************"
 	echo -e "*                                        *"
 	echo -e "*      Welcome to GitCompanion!          *"
@@ -42,7 +42,7 @@ function_print_header() {
 }
 
 # Function to print the footer
-function_print_footer() {
+function print_footer() {
 	echo -e ""
 	echo -e "${GREEN2}******************************************"
 	echo -e "*                                        *"
