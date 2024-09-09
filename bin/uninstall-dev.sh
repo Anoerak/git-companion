@@ -16,7 +16,7 @@ PWD=$(pwd | sed 's/[^a-zA-Z0-9\/_-]/\\&/g')     # Let's get the base directory o
 OS=$(uname -s)                                  # Let's find out what system we are on
 SHELL=$(echo $SHELL | awk -F '/' '{print $NF}') # Let's find out what shell we are using
 
-init() {
+function init() {
 	source libs/define-profile.sh
 	init uninstall
 	source $PROFILE

@@ -14,7 +14,12 @@
 ALIAS="gmenu"
 
 # ANSI color codes
-source libs/color-codes.sh
+if [ -f "/usr/local/bin/git_companion/color-codes.sh" ]; then
+	source /usr/local/bin/git_companion/color-codes.sh
+else
+	echo "pwd: $(pwd)"
+	source ./bin/color-codes.sh
+fi
 
 # Variables
 # We want the path but before the /bin/Git_Menu/git-menu-script.sh
@@ -26,7 +31,7 @@ source libs/color-codes.sh
 
 
 # Function to access the main menu
-function_access_menu() {
+function access_menu() {
 	# We print the header of the main menu
 	echo -e "${YELLOW}Welcome to Git Companion!${NC}"
 	echo ""
@@ -56,8 +61,8 @@ function_access_menu() {
 	esac
 }
 
-init() {
-	function_access_menu
+function init() {
+	access_menu
 }
 
 init

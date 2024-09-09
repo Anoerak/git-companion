@@ -10,7 +10,7 @@
 # ANSI color codes
 source libs/color-codes.sh
 
-check_environment() {
+function check_environment() {
 	local command=$1
 
 	if [ "$ENV" == "DEV" ]; then

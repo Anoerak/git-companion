@@ -10,7 +10,7 @@
 # ANSI color codes
 source libs/color-codes.sh
 
-check_permissions() {
+function check_permissions() {
 	local script=$1
 	
 	if [ ! -x $script ]; then

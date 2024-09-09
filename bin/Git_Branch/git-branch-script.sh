@@ -35,7 +35,7 @@ GITIGNORE_FLAG=false
 # REGEX_FINAL_2="(/|\\)\/|//"
 
 # Function to prompt for input
-prompt() {
+function prompt() {
     local var_name=$1
     local prompt_message=$2
     local default_value=$3
@@ -43,7 +43,7 @@ prompt() {
     eval $var_name='"${input:-$default_value}"'
 }
 
-modify_default_user() {
+function modify_default_user() {
     read -p "$(echo -e "${YELLOW}Change default username? (y/n): ${NC}")" change_user
     if [[ "$change_user" =~ ^[Yy]$ ]]; then
         MODIFY_DEFAULT_USER=true
@@ -59,7 +59,7 @@ modify_default_user() {
     fi
 }
 
-create_git_branch_config() {
+function create_git_branch_config() {
     if [ ! -f .git-branch-config ]; then
         read -p "$(echo -e "${YELLOW}No '.git-branch-config file' found. Create one? (y/n): ${NC}")" create_config
         if [[ "$create_config" =~ ^[Yy]$ ]]; then
@@ -110,7 +110,7 @@ create_git_branch_config() {
     fi
 }
 
-select_user() {
+function select_user() {
     # If a default username is saved, we use it
     if [ -f .git-branch-config ] && [ ! "$MODIFY_DEFAULT_USER" == true ]; then
         source .git-branch-config
@@ -304,7 +304,7 @@ select_user() {
 }
 
 # Function to select branch type
-select_branch_type() {
+function select_branch_type() {
     # What type of branch are we creating?
     echo -e "${BLUE}Select branch type:${NC}"
     echo -e "0) ${GREEN}develop${NC} For development branch (default and should be unique)"
@@ -377,14 +377,14 @@ select_branch_type() {
 }
 
 # Function to enter scope (optional)
-enter_scope() {
+function enter_scope() {
     prompt "BRANCH_SCOPE" "Enter the scope of the change (e.g., component, module)" ""
     if [[ -n "$BRANCH_SCOPE" ]]; then
         BRANCH_SCOPE="($BRANCH_SCOPE)"
     fi
 }
 
-enter_bugfix_or_hotfix() {
+function enter_bugfix_or_hotfix() {
     # Are we creating a bugfix or a hotfix?
     read -p "$(echo -e "${YELLOW}Is this a critical bugfix? (y/n): ${NC}")" critical_bugfix
 
@@ -406,7 +406,7 @@ enter_bugfix_or_hotfix() {
 
 }
 
-enter_release_version() {
+function enter_release_version() {
     # New tag flag
     new_tag=false
 
@@ -509,7 +509,7 @@ enter_release_version() {
     fi
 }
 
-enter_improvement_feature_test_custom() {
+function enter_improvement_feature_test_custom() {
     prompt_branch_name
 
     prompt "TICKET_ID" "Enter the ticket reference, if any" ""
@@ -521,7 +521,7 @@ enter_improvement_feature_test_custom() {
 }
 
 # Function to prompt for branch name with description limit
-prompt_branch_name() {
+function prompt_branch_name() {
     # If branch type is bugfix or hotfix, we ask for the issue ID
     if [ "$BRANCH_TYPE" == "bugfix" ] || [ "$BRANCH_TYPE" == "hotfix" ]; then
         prompt "BRANCH_NAME" "Enter a brief description of the issue" ""
@@ -570,7 +570,7 @@ prompt_branch_name() {
     fi
 }
 
-check_version_comparison() {
+function check_version_comparison() {
     local comparison="$1"
     local message="$2"
 
@@ -594,7 +594,7 @@ check_version_comparison() {
 }
 
 # Main function to create branch
-create_branch() {
+function create_branch() {
     select_user
     select_branch_type
 
@@ -609,7 +609,7 @@ create_branch() {
 }
 
 # Function to clean branch name
-clean_branch_name() {
+function clean_branch_name() {
     local branch="$1"
     local secondPass="$2"
 
@@ -628,14 +628,14 @@ clean_branch_name() {
         # On top of that, additional rule for branch name:
         #  11) They cannot start with a dash -.
     
-    prompt_branch_name() {
+    function prompt_branch_name() {
         echo -e "${YELLOW}Enter a new branch name:${NC}"
         read -p "" branch
         clean_branch_name "$branch" false
     }
 
     # We will notify the user if the branch name does not meet the requirements and suggest a new name by removing the invalid characters
-    validate_modification() {
+    function validate_modification() {
         local branch="$1"
         local suggestion="$2"
         echo -e "${YELLOW}Suggested branch name:${NC} ${GREEN}$suggestion${NC}"
@@ -671,7 +671,7 @@ clean_branch_name() {
     fi
 
     # Rule: Cannot contain ASCII control characters, space, tilde ~, caret ^, colon :, question mark ?, asterisk *, open/close braces {} or open/close brackets [].
-    if [[ "$branch" =~ [[:cntrl:]] || "$branch" =~ [[:space:]] || "$branch" =~ [~^:?*{}[\]\\\'] ]]; then
+    if [[ "$branch" =~ [[:cntrl:]] || "$branch" =~ [[:space:]] || "$branch" =~ [~^:?*{}\\[]\\\'] ]]; then
         echo -e "${RED}Error: Branch name contains invalid characters. To get a list of invalid characters, run 'git check-ref-format --print'${NC}"
         suggestion=$(echo "$branch" | sed 's/[[:cntrl:][:space:]~^:?*{}[\]\\\]//g')
         validate_modification "$branch" "$suggestion"
@@ -756,7 +756,7 @@ clean_branch_name() {
 }
 
 # Function to handle branch modification
-create_branch_options() {
+function create_branch_options() {
     # We ask for a confirmation before creating the branch
     read -p "$(echo -e "${YELLOW}Create branch${NC} '${GREEN}$BRANCH_NAME'${NC}${YELLOW}? (y/n): ${NC}")" confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
@@ -897,7 +897,7 @@ create_branch_options() {
     fi
 }
 
-handle_branch_modification() {
+function handle_branch_modification() {
     local element=$1
     local value=$2
 
@@ -1048,7 +1048,7 @@ handle_branch_modification() {
 
 }
 
-set_branch_options() {
+function set_branch_options() {
     # What do we want to do?
     echo -e "${YELLOW}Select an action:${NC}"
     echo -e "${GREEN}1)${NC} ${GREEN}Rename branch${NC}"

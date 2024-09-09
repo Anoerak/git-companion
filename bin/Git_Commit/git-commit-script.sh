@@ -19,7 +19,7 @@ source libs/color-codes.sh
 ALIAS="gcommit"
 
 # Function to prompt for input
-prompt() {
+function prompt() {
 	local var_name=$1
 	local prompt_message=$2
 	local default_value=$3
@@ -28,7 +28,7 @@ prompt() {
 }
 
 # Function to select module
-select_module() {
+function select_module() {
 	echo -e "${BLUE}Select commit type:${NC}"
 	echo -e "${GREEN}1)${NC}${CYAN} feat:${NC} A new feature"
 	echo -e "${GREEN}2)${NC}${CYAN} fix:${NC} A bug fix"
@@ -73,7 +73,7 @@ select_module() {
 }
 
 # Function to select scope
-select_scope() {
+function select_scope() {
 	read -p "$(echo -e "${YELLOW}Enter the scope of the change (e.g., component, module):${NC} ")" SCOPE
 	if [[ -n "$SCOPE" ]]; then
 		SCOPE="($SCOPE)"
@@ -81,7 +81,7 @@ select_scope() {
 }
 
 # Function to stage files
-stage_files() {
+function stage_files() {
 	echo -e "${BLUE}Unstaged files:${NC}"
 	git status --porcelain | grep -E '^[AMDR]|^ [MD]|^\?\?' | nl
 	read -p "$(echo -e "${YELLOW}Enter the numbers of the files to stage, separated by spaces (or 'all' to stage all):${NC} ")" file_choices

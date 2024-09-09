@@ -27,7 +27,7 @@ sudo mkdir -p "$INSTALL_DIR"
 # Copy scripts to the bin directory
 sudo cp -r bin/* "$INSTALL_DIR/"
 
-function_loop_folders() {
+function loop_folders() {
     local FOLDER=$1
     PROFILE_DRAFT=$(mktemp)
     ALIAS_FOUND=false
@@ -58,6 +58,9 @@ function_loop_folders() {
             cd ..
         done
 
+        # We need to copy the color-codes.sh file to the bin directory
+        cp libs/color-codes.sh "$INSTALL_DIR/"
+
         echo -e "# GIT COMPANION end\n" >> "$PROFILE_DRAFT"
     fi
 
@@ -73,10 +76,10 @@ function_loop_folders() {
     cd - >/dev/null
 }
 
-init() {
+function init() {
     echo "Initializing Git Companion setup..."
 
-    function_loop_folders "$INSTALL_DIR"
+    loop_folders "$INSTALL_DIR"
 
     echo "Git Companion setup complete."
     source "$PROFILE"

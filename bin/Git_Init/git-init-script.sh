@@ -17,7 +17,7 @@ ALIAS="ginit"
 source libs/color-codes.sh
 
 # Function to initialize a new repository
-function_init_repo() {
+function init_repo() {
 	echo -e "${YELLOW}Initializing a new repository...${NC}"
 	git init
 	echo -e "${GREEN}Repository initialized successfully.${NC}"
@@ -40,7 +40,7 @@ function_init_repo() {
 }
 
 # Function to get the repository informations
-function_get_repo() {
+function get_repo() {
 	echo -e "${YELLOW}Name${NC}=> ${CYAN}$(git config --get remote.origin.url)${NC}"
 	echo -e "${YELLOW}Branch${NC}=> ${CYAN}$(git branch --show-current)${NC}"
 	echo -e "${YELLOW}User${NC}=> ${CYAN}$(git config --get user.name)${NC}"
@@ -48,7 +48,7 @@ function_get_repo() {
 }
 
 # Function to modify an existing repository informations
-function_modify_repo() {
+function modify_repo() {
 	echo -e "${YELLOW}Here are the current repository informations:${NC}"
 	echo -e "${YELLOW}Name${NC}=> ${CYAN}$(git config --get remote.origin.url)${NC}"
 	echo -e "${YELLOW}Branch${NC}=> ${CYAN}$(git branch --show-current)${NC}"
@@ -82,7 +82,7 @@ function_modify_repo() {
 	fi
 }
 
-init() {
+function init() {
 	echo -e "${YELLOW}Git Init${NC}"
 	echo ""
 	echo -e "${BLUE}What do you want to do?${NC}"
@@ -91,9 +91,9 @@ init() {
 	echo -e "${GREEN}3)${NC} ${CYAN}Modify the repository informations${NC}"
 	read -p "$(echo -e "${YELLOW}Enter the number corresponding to the action you want to perform: ${NC} ")" choice
 	case $choice in
-		1) function_init_repo ;;
-		2) function_get_repo ;;
-		3) function_modify_repo ;;
+		1) init_repo ;;
+		2) get_repo ;;
+		3) modify_repo ;;
 		*) echo -e "${RED}Invalid option. Please try again.${NC}" ;;
 	esac
 

@@ -23,7 +23,7 @@ INSTALL_DIR="/usr/local/bin/git_companion"
 sudo rm -rf "$INSTALL_DIR"
 
 # Function to remove aliases from profile
-function_remove_aliases() {
+function remove_aliases() {
     local TMP_PROFILE=$(mktemp)
     local IN_BLOCK=false
 
@@ -44,10 +44,10 @@ function_remove_aliases() {
     rm -f "$TMP_PROFILE"
 }
 
-init() {
+function init() {
     echo -e "${YELLOW}Uninstalling Git Companion...${NC}"
 
-    function_remove_aliases
+    remove_aliases
 
     echo "${GREEN}Git Companion uninstallation complete.${NC}"
     source "$PROFILE"

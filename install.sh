@@ -11,7 +11,7 @@
 	# updated: 2024-06-24
 # --------------------------------------------------
 
-install() {
+function install() {
 	source libs/load-env.sh
 	source libs/check/check-environment.sh
 	check_environment install

@@ -11,7 +11,7 @@
 source libs/color-codes.sh
 
 # Function to check if Git is installed
-check_bash() {
+function check_bash() {
 	echo -e "${YELLOW}Checking if Bash is installed...${NC}"
 	if ! [ -x "$(command -v bash)" ]; then
 		echo -e "${RED}Error: Bash is not installed.${NC}"
